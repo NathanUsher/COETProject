@@ -13,4 +13,7 @@ db_user = ENV['dbuser']
 db_password = ENV['dbpass']
 db_name = ENV['dbname']
 
+
 connection = PG.connect(host: db_host, user: db_user, password: db_password, dbname: db_name)
+connection = PG.connect(host: db_host, user: db_user, password: db_password, dbname: db_name)
+
