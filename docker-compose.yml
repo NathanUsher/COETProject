@@ -6,7 +6,22 @@ services:
     image: postgres:latest
     restart: always
     environment:
+      POSTGRES_USER: user
       POSTGRES_PASSWORD: pass
     ports:
       - '5432:5432'
-
+    volumes:
+      - postgres-stuff/var/lib/postgresql/data
+  mainapp:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    depends_on:
+      - db
+    ports:
+      - "4567:4567"
+    environment:
+      DB_HOST: db
+      DB_USER: user
+      DB_PASSWORD: pass
+      DB_NAME: database
