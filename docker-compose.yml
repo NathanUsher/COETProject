@@ -16,8 +16,6 @@ services:
       - '5432:5432'
     volumes:
       - postgres-stuff/var/lib/postgresql/data
-
-
   my_backend:
     build: 
       context: .
@@ -27,18 +25,3 @@ services:
     ports:
       - '4567:4567'
     env_file: .env
-    
-
-  mainapp:
-    build:
-      context: .
-      dockerfile: Dockerfile
-    depends_on:
-      - db
-    ports:
-      - "4567:4567"
-    environment:
-      DB_HOST: db
-      DB_USER: user
-      DB_PASSWORD: pass
-      DB_NAME: database
