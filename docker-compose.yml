@@ -2,26 +2,20 @@ version: '3.1'
 
 services:
 
-  database:
+  db:
     image: postgres:latest
     restart: always
-
     env_file: .env
-
-    environment:
-      POSTGRES_USER: user
-      POSTGRES_PASSWORD: pass
-
     ports:
       - '5432:5432'
     volumes:
-      - postgres-stuff/var/lib/postgresql/data
+      - ./postgres-stuff:/var/lib/postgresql/data
   my_backend:
     build: 
       context: .
       dockerfile: Dockerfile
     depends_on:
-      - database
+      - db
     ports:
       - '4567:4567'
     env_file: .env
