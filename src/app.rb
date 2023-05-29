@@ -15,6 +15,7 @@ db_name = ENV['dbname']
 
 connection = PG.connect(host: db_host, user: db_user, password: db_password, dbname: db_name)
 
+
 enable :sessions
 
 get '/items' do
@@ -34,4 +35,5 @@ delete '/items:/id' do
   else
     halt 404, "item not found IDIOT"
 end
+
 
