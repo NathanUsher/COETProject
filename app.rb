@@ -25,6 +25,7 @@ end
 
 post '/items' do
   coolnewitem = JSON.parse(request.body.read)
+  
   status 201
 end
 
@@ -35,5 +36,8 @@ delete '/items:/id' do
   else
     halt 404, "item not found IDIOT"
 end
+
+post '/user' do
+  coolnewuser = JSON.parse(request.body.read)
 
 
