@@ -5,16 +5,20 @@ services:
   database:
     image: postgres:latest
     restart: always
-    environment:
-      - env_file: .env
+    env_file: .env
     ports:
       - '5432:5432'
+    volumes:
+      - postgres-stuff/var/lib/postgresql/data
   my_backend:
-    build: .
+    build: 
+      context: .
+      dockerfile: Dockerfile
     depends_on:
       - database
     ports:
-      - '8080:8080'
+      - '4567:4567'
+    env_file: .env
     
 
 
