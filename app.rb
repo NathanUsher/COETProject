@@ -1,9 +1,10 @@
 
-
 require 'sinatra'
 require 'sinatra/reloader'
 require 'json'
 require 'pg'
+require "sinatra/json"
+require 'sinatra/param'
 
 configure do
   set :port,4567
@@ -19,37 +20,48 @@ sleep 2
 connection = PG.connect(host: db_host, user: db_user, password: db_password, dbname: db_name)
 
 
+connection.exec('CREATE TABLE IF NOT EXISTS usr (id UUID PRIMARY KEY DEFAULT gen_random_uuid(), username varchar(255), password varchar(255));');
+connection.exec('CREATE TABLE IF NOT EXISTS items (id UUID PRIMARY KEY DEFAULT gen_random_uuid(), name varchar(255), price integer);');
+
+
 enable :sessions
 
 get '/items' do
-  items = conn.exec('SELECT * FROM items').to_a
-  items.to_json
+  content_type :json
+  items = connection.exec('SELECT * FROM items').to_a
+  json items
 end
 
 post '/items' do
-  coolnewitem = JSON.parse(request.body.read)
-  connection.exec_params('insert into items (name, price) VALUES ($1, $2)', [coolnewitem[name], coolnewitem[price]])
-  status 201
+  content_type :json
+
+  data = JSON.parse request.body.read
+  puts data
+  
+  connection.exec_params('insert into items (name, price) VALUES ($1, $2)', [data["name"], data["price"]])
+  
+  status 204
 end
 
 delete '/items/:id' do
-  @item = Item.find_by_id(params[:id])
-  if @item
-    @item.destroy
-  else
+  content_type :json
+  puts params
     halt 404, "item not found IDIOT"
-  end
+  connection.exec_params('DELETE FROM items where id = $1', [params[:id]])
+  status 201
 end
 
 post '/user' do
-  coolnewuser = JSON.parse(request.body.read)
-  connection.exec_params('insert into user (username, password) VALUES ($1, $2)', [coolnewuser[username], coolnewuser[password]])
-  return username
+  content_type :json
+  data = JSON.parse request.body.read
+  connection.exec_params('insert into usr (username, password) VALUES ($1, $2)', [data["username"], data["password"]])
+  status 204
 end
 
 get '/user/:id' do
-  user = conn.exec('SELECT * FROM user WHERE User.id=$1 ').to_a, [params[:id]]
-  user.to_json
+  content_type :json
+  user = connection.exec('SELECT * FROM usr ').to_a
+  json user
 end
 
 
