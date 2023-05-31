@@ -46,9 +46,8 @@ end
 delete '/items/:id' do
   content_type :json
   puts params
-    halt 404, "item not found IDIOT"
   connection.exec_params('DELETE FROM items where id = $1', [params[:id]])
-  status 201
+  status 204
 end
 
 post '/user' do
